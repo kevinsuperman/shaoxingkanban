@@ -1,8 +1,6 @@
-var symptomName = last_month_day();
+const symptomName = last_month_day();
 
 $(function(){
-
-
   init();
   init2();
     $("#el-dialog").addClass("hide");
@@ -33,19 +31,67 @@ $(function(){
          }
      })
  });
-
 })
+
 function init(){
   //地图
   const map = echarts.init(document.getElementById('map'));
 
+  //地图循环点播
+  let currentIndex = -1;
+  const highlight = function () {
+      const dataLen = scatterVal.length;
+      // 取消之前高亮的图形
+      map.dispatchAction({
+          type: 'downplay',
+          seriesIndex: 0,
+          dataIndex: currentIndex
+      });
+      currentIndex = (currentIndex + 1) % dataLen;
+      // 高亮当前图形
+      map.dispatchAction({
+          type: 'highlight',
+          seriesIndex: 0,
+          dataIndex: currentIndex
+      });
+      // 显示 tooltip
+      map.dispatchAction({
+          type: 'showTip',
+          seriesIndex: 0,
+          dataIndex: currentIndex
+      });
+  };
+  
+  setInterval(highlight, 2000);
+
   const scatterGeo = {
-      "绍兴人民医院": [120.580232, 30.029752]
+      "绍兴人民医院": [120.600753,30.028053],
+      "绍兴市立医院": [120.592651,29.962782],
+      "城南街道社区卫生服务中心": [120.588504,29.985109],
+      "稽山街道社区卫生服务中心": [120.602288,29.984332],
+      "府山街道社区卫生服务中心": [120.582193,30.004296],
+      "北海街道社区卫生服务中心": [120.565073,30.023134],
+      "斗门街道社区卫生服务中心": [120.610552,30.098531],
+      "东浦镇卫生院": [120.543453,30.05284],
+      
+      "诸暨市中心医院": [120.241002,29.73356],
+      "诸暨市中医医院": [120.245819,29.723672],
+      
   };
 
-    //城市数据
+    //医院数据
     const scatterVal = [
-        {name: "绍兴人民医院", value: 9, isHospital:true}
+        {name: "绍兴人民医院", isHospital:true},
+        {name: "绍兴市立医院", isHospital:true},
+        {name: "城南街道社区卫生服务中心", isHospital:true},
+        {name: "稽山街道社区卫生服务中心", isHospital:true},
+        {name: "府山街道社区卫生服务中心", isHospital:true},
+        {name: "北海街道社区卫生服务中心", isHospital:true},
+        {name: "斗门街道社区卫生服务中心", isHospital:true},
+        {name: "东浦镇卫生院", isHospital:true},
+
+        {name: "诸暨市中心医院", isHospital:true},
+        {name: "诸暨市中医医院", isHospital:true},
     ];
 
     //数据转换，转换后的格式：[{name: 'cityName', value: [lng, lat, val]}, {...}]
